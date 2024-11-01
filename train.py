@@ -64,11 +64,6 @@ def prepare_training():
             model.parameters(), config['optimizer'])
         epoch_start = 1
     
-    #计算参数量
-    # input_tensor = torch.randn(1, 3, 224, 224) 
-    # flops, params = profile(model, inputs=(input_tensor, ))
-    # print('FLOPs = ' + str(flops/1000**3) + 'G')
-    # print('Params = ' + str(params/1000**2) + 'M')
 
 
     max_epoch = config.get('epoch_max')
