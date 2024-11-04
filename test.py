@@ -51,7 +51,6 @@ def compute_iou(s, g):
     return np.nanmean(intersection / (union+ 1e-10)) 
 
 def eval_dice(label_base,pred_base,thres=0.5):
-    # Note=open('/data/models/qxf/mic/snr/in_snr_decoder/eval_fig/preds_everyone.txt',mode='w')
     dices,ious,res = [],[],[]
     label_base = label_base
     pred_base = pred_base
@@ -92,7 +91,7 @@ def eval_psnr(loader, model, data_norm=None, eval_type=None, eval_bsize=None,
             'gt': {'sub': [0], 'div': [1]}
         }
     '''
-    save_dir = '/root/autodl-tmp/method/add_2bolck/pred'
+    save_dir = '/root/autodl-tmp/method/PTDS/pred'
     
     t0 = time.time()
     fps_save, fps_list, frame_num = [], [], 0 # mean fps
@@ -127,7 +126,7 @@ def eval_psnr(loader, model, data_norm=None, eval_type=None, eval_bsize=None,
     return [sum(fps_list)/len(fps_list),sum(fps_save)/len(fps_save)]
 
 def test_all(models_path):
-    Note=open('/root/autodl-tmp/method/add_2bolck/save/eval/eval.txt',mode='w')
+    Note=open('/root/autodl-tmp/method/PTDS/save/eval/eval.txt',mode='w')
     Note.truncate(0)
     
     for file_name in sorted(os.listdir(models_path)):
@@ -141,7 +140,7 @@ def test_all(models_path):
 
             _,_=eval_psnr(loader, model,data_norm=config.get('data_norm'),eval_type=config.get('eval_type'),eval_bsize=config.get('eval_bsize'),verbose=True)
 
-            pred_base='/root/autodl-tmp/method/add_2bolck/pred'
+            pred_base='/root/autodl-tmp/method/PTDS/pred'
             label_base=spec['dataset']['args']['root_path_2']
             [m_dice,m_iou]=eval_dice(label_base,pred_base,thres=0.5)
             print(model_path +", mean Dice is " + str(m_dice) + ', ' + "IoU is " + str(m_iou))
@@ -156,15 +155,15 @@ def test_one(model_path):
 
     [FPS_, FPS]=eval_psnr(loader, model,data_norm=config.get('data_norm'),eval_type=config.get('eval_type'),eval_bsize=config.get('eval_bsize'),verbose=True)
 
-    pred_base='/root/autodl-tmp/method/add_2bolck/pred'
+    pred_base='/root/autodl-tmp/method/PTDS/pred'
     label_base=spec['dataset']['args']['root_path_2']
     [m_dice,m_iou]=eval_dice(label_base,pred_base,thres=0.5)
     print(model_path +", mean Dice is " + str(m_dice) + ', ' + "IoU is " + str(m_iou)+',' +  'FPS_:%.2f'%FPS_+' FPS:%.2f'%FPS)
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', default="/root/autodl-tmp/method/add_2bolck/configs/demo.yaml")
-    parser.add_argument('--model',default="/root/autodl-tmp/method/add_2bolck/save/_demo/21.pth")
+    parser.add_argument('--config', default="/root/autodl-tmp/method/PTDS/configs/demo.yaml")
+    parser.add_argument('--model',default="/root/autodl-tmp/method/PTDS/save/_demo/1.pth")
     parser.add_argument('--prompt', default='none')
     args = parser.parse_args()
 
@@ -177,21 +176,8 @@ if __name__ == '__main__':
     loader = DataLoader(dataset, batch_size=spec['batch_size'],
                         num_workers=8, shuffle=False)
 
-    # model_path='/data/models/qxf/SAM/save/_demo'
-    # models_path='/root/autodl-tmp/method/add_2bolck/save_lr=1e-4/_demo'
+    # models_path='/root/autodl-tmp/method/PTDS/save/_demo'
     # test_all(models_path)
-    model_path='/root/autodl-tmp/method/add_2bolck/save/_demo/21.pth'
+    model_path='/root/autodl-tmp/method/PTDS/save/_demo/1.pth'
     test_one(model_path)
-    
-    '''
-    model = models.make(config['model']).cuda()
-    sam_checkpoint = torch.load(args.model, map_location='cuda:0')
-    model.load_state_dict(sam_checkpoint, strict=True)
-
-    eval_psnr(loader, model,data_norm=config.get('data_norm'),eval_type=config.get('eval_type'),eval_bsize=config.get('eval_bsize'),verbose=True)
-
-    pred_base='/data/models/qxf/SAM/msak'
-    label_base=spec['dataset']['args']['root_path_2']
-    [m_dice,m_iou]=eval_dice(label_base,pred_base,thres=0.5)
-    print(" mean Dice is " + str(m_dice) + ', ' + "IoU is " + str(m_iou))
-    '''
+   
