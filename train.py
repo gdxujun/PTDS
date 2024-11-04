@@ -15,17 +15,7 @@ import torch
 import torch.distributed as dist
 from thop import profile
 
-'''
-os.environ['CUDA_VISIBLE_DEVICES'] = '0'
-torch.distributed.init_process_group(backend='nccl')
-local_rank = torch.distributed.get_rank()
-rank = int(os.environ["RANK"])
-print(f"[{os.getpid()}] (rank = {rank}, local_rank = {local_rank}) train worker starting...")
 
-torch.cuda.set_device(local_rank)
-
-device = torch.device("cuda", local_rank)
-'''
 device = torch.device("cuda")
 
 def make_data_loader(spec, tag=''):
@@ -211,7 +201,7 @@ def save(config, model, save_path, name):
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', default="/root/autodl-tmp/method/add_2bolck/configs/demo.yaml")
+    parser.add_argument('--config', default="/root/autodl-tmp/method/PTDS/configs/demo.yaml")
     parser.add_argument('--name', default=None)
     parser.add_argument('--tag', default=None)
     parser.add_argument("--local_rank", type=int, default=-1, help="")
@@ -226,6 +216,6 @@ if __name__ == '__main__':
         save_name = '_' + args.config.split('/')[-1][:-len('.yaml')]
     if args.tag is not None:
         save_name += '_' + args.tag
-    save_path = os.path.join('/root/autodl-tmp/method/add_2bolck/save_new', save_name)
+    save_path = os.path.join('/root/autodl-tmp/method/PTDS/save', save_name)
 
     main(config, save_path, args=args)
