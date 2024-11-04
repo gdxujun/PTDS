@@ -7,7 +7,7 @@ pip install -r requirements.txt
 
 
 ## Quick Start
-1. Download the dataset and put it in ./load.
+1. Download the dataset and put it in ./data.
 2. Download the pre-trained [SAM 2(Segment Anything)](https://dl.fbaipublicfiles.com/segment_anything_2/092824/sam2.1_hiera_large.pt).
 3. Training:
 ```bash
