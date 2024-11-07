@@ -118,7 +118,7 @@ def main(config_, save_path, args):
     model.load_state_dict(sam_checkpoint['model'], strict=False)
     
     for name, para in model.named_parameters():
-        if "image_encoder" in name and "prompt_generator" not in name:
+        if "image_encoder" in name and "bias" not in name:
             para.requires_grad_(False)
             
         # if "text_encoder" in name:
