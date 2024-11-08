@@ -388,6 +388,7 @@ class MaskDecoder_2(nn.Module):
         #     LayerNorm2d(transformer_dim // 16),
         #     activation(),
         # )
+        
         self.use_high_res_features = use_high_res_features
         if use_high_res_features:
             self.conv_s0 = nn.Conv2d(
@@ -445,7 +446,6 @@ class MaskDecoder_2(nn.Module):
         
         self.softmax = nn.Softmax(dim=1)
         self.layersacle = LayerScale(4096)
-        # self.feature_fusion = CMA_Block(32,16,64)
         
     def forward(
         self,
@@ -568,29 +568,8 @@ class MaskDecoder_2(nn.Module):
         pos_src = torch.repeat_interleave(image_pe, tokens.shape[0], dim=0)
         b, c, h, w = src.shape
 
-        # if gt is not None:
-        #     gt_feat = gt.clone()
-
-        # if mode =='train':
-        #     msk_feat = torch.nn.Dropout(p=0.1, inplace=True)(msk_feat)
-        #     gt_feat = gt_feat.resize_(gt_feat.shape[0], h , w).int()
-        #     gt_feat = gt_feat.view(gt_feat.shape[0],h*w).unsqueeze(1)
-        #     gt_feat = gt_feat.repeat(1,9,1)
-        #     lab, cnts = torch.unique(gt_feat, sorted=True, return_counts=True)
-        #     unique = torch.stack((lab,cnts),dim=1)
-        #     unique_sorted, unique_ind = torch.sort(unique,dim=0)
-        #     noise_mean = torch.mean(msk_feat).cuda()
-        #     for i,cnt_ind in enumerate(unique_ind[:,1]):
-        #         noise_list = [0.35,0.3,0.3,0.2,0.2,0.1,0.1,0,0] 
-        #         var = noise_list[i]
-        #         noise = torch.randn((msk_feat.size())) * var 
-        #         noise = noise.cuda() + noise_mean
-        #         msk_feat[gt_feat==lab[cnt_ind]] = msk_feat[gt_feat==lab[cnt_ind]] + noise[gt_feat==lab[cnt_ind]]
         msk_feat = self.self_attn(q=msk_feat, k=msk_feat, v=msk_feat)         
-           
-
         msk_feat = self.norm1(msk_feat)
-        
         msk_feat = self.self_attn2(q=msk_feat, k=msk_feat, v=msk_feat)
         msk_feat = msk_feat.clone()+self.layersacle(self.mlp(msk_feat))
         msk_feat = self.norm2(msk_feat)
