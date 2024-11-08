@@ -1,6 +1,6 @@
 ## Progressive Two-Stage Decoder Segment Anything Model for Polyp Segmentation
 ## Environment
-This code was implemented with Python 3.11 and PyTorch 2.3.0. You can install all the requirements via:
+This code was implemented with Python 3.11 and PyTorch 2.3.0 and mmcv 1.7.2. You can install all the requirements via:
 ```bash
 pip install -r requirements.txt
 ```
